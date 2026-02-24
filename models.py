@@ -8,7 +8,7 @@ class OrderInput(BaseModel):
     latitude: float
     longitude: float
     subtotal: float
-    timestamp: NaiveDatetime | None
+    # timestamp: NaiveDatetime | None
 
 class Breakdown(BaseModel):
     state_rate: float

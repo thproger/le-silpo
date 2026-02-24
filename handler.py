@@ -1,45 +1,17 @@
-import geopandas as gpd
-# from sqlmodel import create_engine, SQLModel, get_session, Session
-from fastapi import FastAPI
-import os
-from contextlib import asynccontextmanager
-
-nevshtati = 0
-
-PASSWORD = os.getenv('DATABASE_PASSWORD')
-mysql_uri = f'mysql://avnadmin:{PASSWORD}@mysql-284693bc-ftcserhiy-b36b.j.aivencloud.com:25042/defaultdb'
-# engine = create_engine(mysql_uri)
-
-with open('Cities_Towns.geojson', 'r') as file:
-    cities = gpd.read_file(file)
-
-cities['geometry'] = cities.geometry.make_valid()
-cities = cities.to_crs(epsg=3857)
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    yield
-    # SQLModel.metadata.create_all(engine)
-
-app = FastAPI(lifespan=lifespan)
-
-# def get_session():
-#     with Session(engine) as session:
-#         yield session
-
 from fastapi import HTTPException, UploadFile, Depends
 from pydantic import ValidationError
+import main
 import tax_service
 import io
 from models import OrderInput
 from sqlmodel import Session
 import csv
 
-@app.get('/orders')
+@main.app.get('/orders')
 def get_orders():
     return {"Hello": "world"}
 
-@app.post('/orders')
+@main.app.post('/orders')
 async def create_order(file: UploadFile):
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Файл має бути у форматі CSV")
@@ -77,10 +49,6 @@ async def create_order(file: UploadFile):
     return [tax_service.calculate_tax(order) for order in orders]
 
 
-@app.post('/ordersssss')
+@main.app.post('/orders')
 def create_order(order: OrderInput):
     return tax_service.calculate_tax(order)
-
-@app.get('/ne')
-def ne():
-    return {'ne': nevshtati}
