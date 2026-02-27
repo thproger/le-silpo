@@ -2,3 +2,4 @@ fastapi
 geopandas
 mysqlclient
 PyMySQL
+uvicorn

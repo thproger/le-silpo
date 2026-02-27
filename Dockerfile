@@ -25,4 +25,4 @@ EXPOSE 8000
 
 # 8. Запуск. Зверни увагу: якщо main.py був у backend/, 
 # то тепер він лежить прямо в /app, тому шлях "main:app"
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "python -m uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
