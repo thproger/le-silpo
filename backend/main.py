@@ -5,6 +5,7 @@ import os
 from contextlib import asynccontextmanager
 from routers import router
 from models import Base, Order
+from fastapi.middleware.cors import CORSMiddleware
 
 nevshtati = 0
 
@@ -29,4 +30,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(router)

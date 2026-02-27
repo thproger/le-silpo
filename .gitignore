@@ -4,3 +4,5 @@ __pycache__
 *.geojson
 frontend/node_modules/*
 *.csv
+*.lock
+frontend/.angular/*
