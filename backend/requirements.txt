@@ -4,3 +4,4 @@ mysqlclient
 PyMySQL
 uvicorn
 sqlmodel
+python-multipart
