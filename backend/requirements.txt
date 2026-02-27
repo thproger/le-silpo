@@ -1,0 +1,4 @@
+fastapi
+geopandas
+mysqlclient
+PyMySQL
