@@ -1,0 +1,11 @@
+@media (max-width: 768px) {
+  .manual-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .manual-cell-input {
+    width: 100%;
+    font-size: 0.7rem;
+  }
+}

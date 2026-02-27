@@ -14,18 +14,27 @@ export class ManualCreate {
 
   constructor(private fb: FormBuilder) {
     this.orderForm = this.fb.group({
-      rows: this.fb.array([this.createRow()]) // Починаємо з одного порожнього рядка
+      rows: this.fb.array([this.createRow()]),
     });
   }
 
-  get rows() { return this.orderForm.get('rows') as FormArray; }
+  get rows() {
+    return this.orderForm.get('rows') as FormArray;
+  }
 
   createRow() {
     return this.fb.group({
-      id: [''], longitude: [''], latitude: [''],
-      timestamp: [''], subtotal: [''], tax: [''], total: ['']
+      id: [''],
+      longitude: [''],
+      latitude: [''],
+      timestamp: [''],
+      subtotal: [''],
+      tax: [''],
+      total: [''],
     });
   }
 
-  addRow() { this.rows.push(this.createRow()); }
+  addRow() {
+    this.rows.push(this.createRow());
+  }
 }
