@@ -5,7 +5,7 @@ import { ManualCreate } from './components/manual-create/manual-create';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'import', pathMatch: 'full' }, // за замовчуванням
-    { path: 'import', component: ImportCsv },
-    { path: 'list', component: OrdersList },
-    { path: 'manual', component: ManualCreate },
+    { path: '/import', component: ImportCsv },
+    { path: '/list', component: OrdersList },
+    { path: '/manual', component: ManualCreate },
 ];

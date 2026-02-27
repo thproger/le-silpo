@@ -2,3 +2,5 @@
 __pycache__/*
 __pycache__
 *.geojson
+frontend/node_modules/*
+*.csv

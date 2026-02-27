@@ -1,16 +1,18 @@
-from models import Order, OrderInput
-from sqlmodel import Session
+from models import Order
+from sqlmodel import Session, select
 
-def create_order(session: Session, order: OrderInput) -> Order:
-    db_order = Order.model_validate(order)
-    session.add(db_order)
+def create_order(session: Session, order: Order) -> Order:
+    session.add(order)
     session.commit()
-    session.refresh(db_order)
-    return db_order
+    session.refresh(order)
+    return order
 
-def create_orders(session: Session, orders: list[OrderInput]) -> list[Order]:
-    db_orders = [Order.model_validate(order) for order in orders]
-    session.add_all(db_orders)
+def create_orders(session: Session, orders: list[Order]) -> list[Order]:
+    # db_orders = [Order.model_validate(order) for order in orders]
+    session.add_all(orders)
     session.commit()
 
-    return db_orders
+    return orders
+
+def get_all_orders(session: Session) -> list[Order]:
+    return session.exec(select(Order)).all()
