@@ -36,5 +36,6 @@ export class ManualCreate {
 
   addRow() {
     this.rows.push(this.createRow());
+    
   }
 }

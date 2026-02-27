@@ -1,6 +1,7 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as Papa from 'papaparse';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-import-csv',
@@ -16,8 +17,9 @@ export class ImportCsv {
   tableLetters: string[] = [];
   isParsed: boolean = false;
   isDragging: boolean = false;
+  result: any[] = [];
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef, private http: HttpClient) {}
 
   onFileSelected(event: any) {
     let file: File | null = null;
@@ -35,7 +37,7 @@ export class ImportCsv {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: 'greedy',
-      encoding: 'windows-1251',
+      encoding: 'utf-8',
       complete: (result) => {
         this.headers = result.meta.fields || [];
         this.previewData = result.data;
@@ -47,15 +49,23 @@ export class ImportCsv {
   }
 
   uploadData() {
+    if(this.selectedFile) {
+          const formData = new FormData();
     if (!this.isParsed || !this.previewData.length) return;
 
-    console.log('Відправляємо дані на локальний бек...', this.previewData);
+    formData.append('file', this.selectedFile, this.selectedFile.name)
+    // Запит на бек
+    this.http.post('http://localhost:8000/orders/import', formData)
+    // Ось тут відповідь від бека записується у поле `result`
+      .subscribe({
+        // Правильний результат
+        next: (result: any) => this.result = result,
+        // Обробка помилок
+        error: (err) => console.error(err)
+      });
+      
+    }
 
-    // Припустимо, твій бек чекає POST запит
-    // this.http.post('http://localhost:8000/api/orders', this.previewData)
-    //   .subscribe(res => console.log('Збережено!'));
-
-    alert('Дані готові до відправки на локальний сервер!');
   }
 
   reset() {
