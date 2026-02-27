@@ -1,13 +1,13 @@
-@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css");
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css');
 
 body {
-    margin: 0;
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-    -webkit-font-smoothing: antialiased;
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .table {
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
 }

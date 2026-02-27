@@ -17,7 +17,7 @@ export class ImportCsv {
   isParsed: boolean = false;
   isDragging: boolean = false;
 
-  constructor(private cdr: ChangeDetectorRef) {} // Додаємо для надійності оновлення UI
+  constructor(private cdr: ChangeDetectorRef) {}
 
   onFileSelected(event: any) {
     let file: File | null = null;
@@ -34,16 +34,28 @@ export class ImportCsv {
     this.selectedFile = file;
     Papa.parse(file, {
       header: true,
-      skipEmptyLines: true,
-      preview: 10,
+      skipEmptyLines: 'greedy',
+      encoding: 'windows-1251',
       complete: (result) => {
         this.headers = result.meta.fields || [];
         this.previewData = result.data;
         this.tableLetters = this.headers.map((_, i) => String.fromCharCode(65 + i));
         this.isParsed = true;
-        this.cdr.detectChanges(); // Примусово оновлюємо екран
-      }
+        this.cdr.detectChanges();
+      },
     });
+  }
+
+  uploadData() {
+    if (!this.isParsed || !this.previewData.length) return;
+
+    console.log('Відправляємо дані на локальний бек...', this.previewData);
+
+    // Припустимо, твій бек чекає POST запит
+    // this.http.post('http://localhost:8000/api/orders', this.previewData)
+    //   .subscribe(res => console.log('Збережено!'));
+
+    alert('Дані готові до відправки на локальний сервер!');
   }
 
   reset() {

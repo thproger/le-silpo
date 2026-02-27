@@ -1,0 +1,73 @@
+<div class="orders-wrapper p-4">
+  <h2 class="mb-4 fw-bold">Orders list</h2>
+
+  @if (orders.length === 0) {
+    <div class="empty-state">
+      <p class="fs-4 text-dark">Please, import a CSV file.</p>
+    </div>
+  } @else {
+    <div class="orders-container bg-white rounded shadow-sm overflow-hidden">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead>
+            <tr>
+              <th class="ps-4">ID</th>
+              <th>longitude</th>
+              <th>latitude</th>
+              <th>timestamp</th>
+              <th>subtotal</th>
+              <th>tax</th>
+              <th>total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of orders; track order.id) {
+              <tr [class.table-success-custom]="order.isValid">
+                <td class="ps-4">{{ order.id }}</td>
+                <td>{{ order.longitude }}</td>
+                <td>{{ order.latitude }}</td>
+                <td>{{ order.timestamp }}</td>
+                <td>{{ order.subtotal }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center py-3 px-4 border-top bg-light">
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item">
+              <a class="page-link border-0 bg-transparent text-dark" href="#"
+                ><i class="bi bi-caret-left-fill"></i
+              ></a>
+            </li>
+            <li class="page-item active">
+              <a class="page-link border-0 mx-1 rounded" href="#">1</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link border-0 mx-1 bg-transparent text-dark" href="#">2</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link border-0 mx-1 bg-transparent text-dark" href="#">3</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link border-0 mx-1 bg-transparent text-dark" href="#">4</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link border-0 mx-1 bg-transparent text-dark" href="#">5</a>
+            </li>
+            <li class="page-item">
+              <span class="page-link border-0 bg-transparent text-dark">...</span>
+            </li>
+            <li class="page-item">
+              <a class="page-link border-0 bg-transparent text-dark" href="#"
+                ><i class="bi bi-caret-right-fill"></i
+              ></a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  }
+</div>

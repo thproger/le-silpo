@@ -1,0 +1,41 @@
+.orders-wrapper {
+  background-color: #f1f5f9;
+  min-height: 100vh;
+}
+
+.table thead th {
+  background-color: #4a5568 !important;
+  color: white !important;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  padding: 15px 10px;
+  border: none;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f0fff4;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #4db6ac !important;
+  color: white !important;
+  border-radius: 4px;
+}
+
+.empty-state {
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .table thead th {
+    font-size: 10px;
+    padding: 8px 4px !important;
+    white-space: normal;
+  }
+
+  .table tbody td {
+    font-size: 11px;
+    padding: 8px 4px !important;
+    word-break: break-all;
+  }
+}
