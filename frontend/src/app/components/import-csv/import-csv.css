@@ -1,0 +1,62 @@
+.import-card {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+}
+
+.drop-zone {
+    border: 2px solid #e2e8f0;
+    background: #edf2f7;
+    border-radius: 4px;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #718096;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.drop-zone.dragover {
+    border: 2px dashed #4fd1c5;
+    background-color: #f0fff4;
+    color: #4fd1c5;
+}
+
+.btn-teal {
+    background-color: #a0aec0;
+    border: none;
+}
+
+.active-upload {
+    background-color: #4fd1c5 !important;
+}
+
+td.bg-dark {
+    background-color: #4a4a4a !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.active-upload {
+    background-color: #4fd1c5 !important;
+    border-color: #4fd1c5 !important;
+    opacity: 1;
+}
+
+.disabled-btn {
+    background-color: #a0aec0 !important;
+    border-color: #a0aec0 !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn:disabled {
+    pointer-events: none;
+}
+
+.btn-danger {
+    background-color: #e53e3e;
+    border: none;
+}
