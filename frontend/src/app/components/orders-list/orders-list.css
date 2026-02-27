@@ -1,0 +1,32 @@
+.table-success-custom {
+    background-color: #e6fffa !important;
+}
+
+.table thead th {
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 15px 10px;
+}
+
+.table tbody td {
+    padding: 15px 10px;
+    vertical-align: middle;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.pagination .page-link {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a5568;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #4db6ac;
+    color: white;
+}
