@@ -1,59 +1,28 @@
-# Frontend
+# Le Silpo
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
+Посилання на [фронтенд](https://le-silpo-frontend.vercel.app)
 
-## Development server
+Посилання на [бекенд](https://le-silpo-production.up.railway.app)
 
-To start a local development server, run:
+[Ендпоінти](https://le-silpo-production.up.railway.app/docs) бекенду
 
-```bash
-ng serve
-```
+# Як відбувається розрахунок податків
+1. Спочатку перевіряється чи є точка взагалі в межах США. Близько тисячі точок знаходяться взагалі поза країною.
+2. Далі встановлюється штат. Деякі точки знаходяться поза штату Нью-Йорк.
+Також є певні точки (10 штук), які знаходяться в штаті, але пошук по округу їх не знаходить, тому там береться загальний податок по штату – 4%.
+3. Потім знаходиться округ, а потім прив'язується до міста.
+Це робиться тому, що досить значна частина точок не належить до юрисдикції міста, а тому податок розраховується тільки по округу, але при пошуку лише місту немає взагалі ніякого податку.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Як розраховуються податки в США
+Загальна ставка (Composite Tax Rate) розраховується як сума наступних показників:
+- State Rate (Штат): Базова ставка штату Нью-Йорк, яка зазвичай становить 4.0%.
+- County Rate (Округ): Місцевий податок, що встановлюється кожним округом індивідуально (наприклад, Erie, Albany тощо).
+- City Rate (Місто): Додаткова ставка, якщо адреса знаходиться в межах міста з власною податковою юрисдикцією (наприклад, Нью-Йорк Сіті має власну ставку, що замінює або доповнює окружну).
+- Special District Rate (MCTD): Спеціальний податок у розмірі 0.375%, що додається в округах, які входять до зони транспортного управління столиці (Metropolitan Commuter Transportation District).
 
-## Code scaffolding
+Використовується бібліотека geopandas для роботи з geojson файлами, що взяті з офіційного сайту штату New-York.
+- [Cities_Towns.geojson](https://data.gis.ny.gov/datasets/cities-towns/explore?location=42.746233%2C-75.715375%2C6)
+- [NYS_SWIS_Codes_4255777886887019575.geojson](https://data.gis.ny.gov/datasets/nys-swis-codes/explore)
+- [Список штатів](https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Результати обчислень податку записуються в базу даних у вигляді двох таблиць: Order і Tax.
