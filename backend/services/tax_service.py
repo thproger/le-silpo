@@ -1,4 +1,4 @@
-from models import OrderInput
+from models import OrderInput, Tax
 from shapely.geometry import Point
 import main
 import geopandas as gpd
@@ -13,17 +13,16 @@ def calculate_tax(order: OrderInput) -> dict:
             'composite_tax_rate': 8,
             'не_в_штаті': True
         }
-    return {
-        'composite_tax_rate': tax['total_rate'],
-        'tax_amount': order.subtotal*tax['total_rate'],
-        'total_amount': order.subtotal + order.subtotal*tax['total_rate'],
-        'jurisdictions': tax['code'],
-        'breakdown': {
-            'state_rate': 0.04,
-            'county_rate': tax['county_rate'],
-            'special_rate': tax['special_rate']
-        }
-    }
+    return Tax(
+        composite_tax_rate=tax['total_rate'],
+        tax_amount=order.subtotal*tax['total_rate'],
+        # tax_amount=order.subtotal + order.subtotal*tax['total_rate'],
+        city_rate=tax['city_rate'],
+        jurisdictions=tax['code'],
+        state_rate=0.04,
+        county_rate=tax['county_rate'],
+        special_rate=tax['special_rate']
+    )
 
 def find(point: Point):
     point_gdf = gpd.GeoDataFrame(
@@ -70,6 +69,8 @@ def get_tax_info(city_name, county_name):
             # Якщо код міста пріоритетніший, оновлюємо його
             if entry.get("code"):
                 tax_info["code"] = entry["code"]
+            else:
+                tax_info['code'] = ''
             break
 
     # 3. Пошук спеціального податку (наприклад, MCTD - Metropolitan Commuter Transportation District)

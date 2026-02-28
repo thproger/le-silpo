@@ -4,7 +4,7 @@ from fastapi import FastAPI
 import os
 from contextlib import asynccontextmanager
 from routers import router
-from models import Base, Order
+from models import Base, Order, Tax
 from fastapi.middleware.cors import CORSMiddleware
 
 nevshtati = 0
@@ -14,6 +14,7 @@ mysql_uri = f'mysql://lesilpo_buildinch:d916b27f00dd38a8659e0b92edd7ae9791583999
 engine = create_engine(mysql_uri)
 print("Creating tables...")
 Order.__table__.create(bind=engine, checkfirst=True)
+Tax.__table__.create(bind=engine, checkfirst=True)
 print("Checking metadata:", Base.metadata.tables.keys())
 SQLModel.metadata.create_all(engine)
 print("Tables created!")

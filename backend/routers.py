@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, Depends
 import services.tax_service as tax_service
 import io
 from sqlmodel import Session
-from models import OrderInput, Order, OrderRead
+from models import OrderInput, OrderSchema, Order
 import pandas
 import main
 import services.service
@@ -13,7 +13,7 @@ def get_session():
 
 router = APIRouter()
 
-@router.post('/orders/import')
+@router.post('/orders/import', response_model=list[OrderSchema])
 async def import_csv(file: UploadFile, session: any = Depends(get_session)):
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Файл має бути у форматі CSV")
@@ -35,17 +35,16 @@ async def import_csv(file: UploadFile, session: any = Depends(get_session)):
         tax = tax_service.calculate_tax(row)
         order_data = row._asdict()
         order_data.pop('id', None)
-        orders.append(Order(**order_data, tax=tax['composite_tax_rate']))
+        orders.append(Order(**order_data, tax=tax))
         taxes.append(tax)
-    services.service.create_orders(orders, session)
+    result = services.service.create_orders(orders, session)
 
-    return taxes
+    return result
 
 @router.post('/orders')
 def create_order(order: OrderInput, session: any = Depends(get_session)):
     tax = tax_service.calculate_tax(order)
-    result = services.service.create_order(order, tax, session)
-    return tax
+    return services.service.create_order(order, tax, session)
 
 @router.get('/orders')
 async def get_orders(session: Session = Depends(get_session)):
