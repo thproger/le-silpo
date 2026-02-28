@@ -1,19 +1,23 @@
-.orders-wrapper {
-  background-color: #f1f5f9;
-  min-height: 100vh;
+.table-container {
+  overflow: hidden;
+  border: 1px solid #dee2e6;
 }
 
 .table thead th {
-  background-color: #4a5568 !important;
-  color: white !important;
+  font-size: 0.85rem;
   text-transform: uppercase;
-  font-size: 0.75rem;
-  padding: 15px 10px;
-  border: none;
+  letter-spacing: 0.5px;
+  padding: 15px;
 }
 
-.table tbody tr:nth-child(even) {
-  background-color: #f0fff4;
+.table tbody td {
+  padding: 12px 15px;
+  vertical-align: middle;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .pagination .page-item.active .page-link {
@@ -24,6 +28,70 @@
 
 .empty-state {
   text-align: left;
+}
+
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transform: scale(0.9);
+  justify-content: flex-end;
+}
+
+.page-btn {
+  background: none;
+  border: none;
+  color: #000;
+  font-size: 1.1rem;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+}
+
+.page-btn.active {
+  background-color: #4db6ac;
+  color: white;
+  border-radius: 8px;
+  padding: 4px 12px;
+}
+
+.arrow-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #2c3e50;
+  cursor: pointer;
+}
+
+.arrow-btn:disabled {
+  opacity: 0.3;
+}
+
+.filter-row td {
+  background-color: #2d3748 !important;
+  padding: 8px 4px !important;
+  border: none;
+}
+
+.filter-row .form-control {
+  background-color: #4a5568;
+  border: 1px solid #718096;
+  color: white;
+  font-size: 0.8rem;
+}
+
+.filter-row .form-control:focus {
+  background-color: #334155;
+  border-color: #4fd1c5;
+  box-shadow: none;
+  color: white;
+}
+
+.filter-row .form-control::placeholder {
+  color: #a0aec0;
+  opacity: 0.6;
 }
 
 @media (max-width: 768px) {
@@ -37,5 +105,37 @@
     font-size: 11px;
     padding: 8px 4px !important;
     word-break: break-all;
+  }
+
+  .pagination-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 576px) {
+    .pagination-bar {
+      justify-content: center;
+      gap: 4px;
+      transform: scale(0.75);
+      padding: 2px 5px;
+    }
+
+    .page-btn {
+      font-size: 0.9rem;
+      padding: 2px 6px;
+    }
+
+    .arrow-btn {
+      font-size: 1.4rem;
+    }
+
+    .page-btn.active {
+      border-radius: 5px;
+      padding: 2px 8px;
+    }
   }
 }

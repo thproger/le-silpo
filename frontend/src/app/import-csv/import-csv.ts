@@ -2,6 +2,8 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as Papa from 'papaparse';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { OrderService } from '../services/order';
 
 @Component({
   selector: 'app-import-csv',
@@ -19,7 +21,12 @@ export class ImportCsv {
   isDragging: boolean = false;
   result: any[] = [];
 
-  constructor(private cdr: ChangeDetectorRef, private http: HttpClient) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private http: HttpClient,
+    private orderService: OrderService,
+    private router: Router,
+  ) {}
 
   onFileSelected(event: any) {
     let file: File | null = null;
@@ -49,23 +56,18 @@ export class ImportCsv {
   }
 
   uploadData() {
-    if(this.selectedFile) {
-          const formData = new FormData();
-    if (!this.isParsed || !this.previewData.length) return;
+    if (this.selectedFile) {
+      const formData = new FormData();
+      formData.append('file', this.selectedFile, this.selectedFile.name);
 
-    formData.append('file', this.selectedFile, this.selectedFile.name)
-    // Запит на бек
-    this.http.post('http://localhost:8000/orders/import', formData)
-    // Ось тут відповідь від бека записується у поле `result`
-      .subscribe({
-        // Правильний результат
-        next: (result: any) => this.result = result,
-        // Обробка помилок
-        error: (err) => console.error(err)
-      });
-      
+      this.http.post('https://le-silpo-production.up.railway.app/orders/import', formData)
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/list']);
+          },
+          error: (err) => console.error('Помилка завантаження:', err)
+        });
     }
-
   }
 
   reset() {
