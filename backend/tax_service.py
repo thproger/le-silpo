@@ -5,7 +5,7 @@ import geopandas as gpd
 import pandas as pd
 from tax import ny_tax_rates
 
-def calculate_tax(order: OrderInput) -> Tax:
+def calculate_tax(order: OrderInput, order_id) -> Tax:
     city, county = find(Point(order.longitude, order.latitude))
     tax = get_tax_info(city, county)
     return Tax(

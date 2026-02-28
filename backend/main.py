@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 nevshtati = 0
 
 PASSWORD = os.getenv('DATABASE_PASSWORD')
-mysql_uri = f'mysql://lesilpo_buildinch:d916b27f00dd38a8659e0b92edd7ae9791583999@ybbegs.h.filess.io:3306/lesilpo_buildinch'
+mysql_uri = f'mysql://root:vefEdGEEIbraUcWLMjWnaUcqzbVHHPaZ@mainline.proxy.rlwy.net:45762/railway'
 engine = create_engine(mysql_uri)
 Order.__table__.create(bind=engine, checkfirst=True)
 Tax.__table__.create(bind=engine, checkfirst=True)
