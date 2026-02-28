@@ -24,6 +24,7 @@
 @media (min-width: 769px) {
   .sidebar {
     width: 100px;
+    flex-shrink: 0;
   }
   .sidebar-top-section {
     background-color: #1a202c;
@@ -85,11 +86,25 @@
   .nav {
     flex-direction: column;
   }
+
   .nav-link {
-    padding: 20px 0;
+    padding: 20px 5px;
+    color: #cbd5e0;
+    text-align: center;
+    text-decoration: none;
+    font-size: 11px;
     border-bottom: 1px solid #718096;
-    display: flex;
-    justify-content: center;
+  }
+
+  .nav-link i {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .nav-link.active {
+    background-color: #4fd1c5;
+    color: white;
   }
 
   .mobile-user-avatar {
@@ -133,12 +148,6 @@
   .mobile-user-avatar {
     display: block;
   }
-  .user-avatar-circle {
-    width: 32px;
-    height: 32px;
-    background-color: #a0aec0;
-    border-radius: 50%;
-  }
 
   .nav {
     flex-direction: row !important;
@@ -158,6 +167,9 @@
   }
   .nav-link i {
     margin: 0 !important;
+  }
+  .nav-link span {
+    display: none;
   }
 
   .top-header {

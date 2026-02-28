@@ -1,73 +1,133 @@
 <div class="orders-wrapper p-4">
-  <h2 class="mb-4 fw-bold">Orders list</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold m-0 text-dark">Orders list</h2>
+  </div>
 
-  @if (orders.length === 0) {
-    <div class="empty-state">
-      <p class="fs-4 text-dark">Please, import a CSV file.</p>
+  <div class="filters-container d-flex flex-wrap gap-3 mb-4 p-3 bg-white shadow-sm rounded">
+    <div class="filter-group">
+      <label class="small fw-bold d-block mb-1 text-muted text-uppercase">Tax ({{filters.tax}})</label>
+      <div class="btn-group btn-group-sm">
+        <button (click)="setFilter('tax', 'asc')"
+                [class.active]="filters.tax === 'asc'" class="btn btn-outline-secondary">asc</button>
+        <button (click)="setFilter('tax', 'desc')"
+                [class.active]="filters.tax === 'desc'" class="btn btn-outline-secondary">desc</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label class="small fw-bold d-block mb-1 text-muted text-uppercase">Time ({{filters.timestamp}})</label>
+      <div class="btn-group btn-group-sm">
+        <button (click)="setFilter('timestamp', 'newest')"
+                [class.active]="filters.timestamp === 'newest'" class="btn btn-outline-secondary">newest</button>
+        <button (click)="setFilter('timestamp', 'oldest')"
+                [class.active]="filters.timestamp === 'oldest'" class="btn btn-outline-secondary">oldest</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label class="small fw-bold d-block mb-1 text-muted text-uppercase">Total ({{filters.amount}})</label>
+      <div class="btn-group btn-group-sm">
+        <button (click)="setFilter('amount', 'asc')"
+                [class.active]="filters.amount === 'asc'" class="btn btn-outline-secondary">ascending</button>
+        <button (click)="setFilter('amount', 'desc')"
+                [class.active]="filters.amount === 'desc'" class="btn btn-outline-secondary">descending</button>
+      </div>
+    </div>
+  </div>
+
+  @if (pagedOrders && pagedOrders.length > 0) {
+    <div class="table-container shadow-sm rounded bg-white table-responsive-custom">
+      <table class="table table-hover m-0">
+        <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Longitude</th>
+          <th>Latitude</th>
+          <th>Timestamp</th>
+          <th>Subtotal</th>
+          <th>Tax Rate</th>
+          <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (order of pagedOrders; track $index) {
+            <tr>
+              <td data-label="ID">{{ (currentPage - 1) * pageSize + $index + 1 }}</td>
+              <td data-label="Longitude">{{ order.longitude }}</td>
+              <td data-label="Latitude">{{ order.latitude }}</td>
+              <td data-label="Timestamp" class="text-nowrap">{{ order.timestamp | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+              <td data-label="Subtotal">{{ order.subtotal | currency: 'USD' : 'symbol' : '1.2-2' }}</td>
+
+              <td data-label="Tax Rate" class="position-relative">
+                <div class="tax-info-group">
+                  <span class="tax-value">{{ order.tax?.composite_tax_rate }}%</span>
+                  <span class="info-icon">i</span>
+
+                  <div class="tax-tooltip shadow-lg border-0">
+                    <div class="fw-bold border-bottom mb-2 pb-1 text-dark">Tax Breakdown</div>
+                    <div class="d-flex justify-content-between gap-3 mb-1">
+                      <span>State:</span> <strong>{{ order.tax?.state_rate }}%</strong>
+                    </div>
+                    <div class="d-flex justify-content-between gap-3 mb-1">
+                      <span>City:</span> <strong>{{ order.tax?.city_rate }}%</strong>
+                    </div>
+                    @if (order.tax?.county_rate > 0) {
+                      <div class="d-flex justify-content-between gap-3 mb-1">
+                        <span>County:</span> <strong>{{ order.tax?.county_rate }}%</strong>
+                      </div>
+                    }
+                    @if (order.tax?.special_rate > 0) {
+                      <div class="d-flex justify-content-between gap-3 text-info mb-1">
+                        <span>Special:</span> <strong>{{ order.tax?.special_rate }}%</strong>
+                      </div>
+                    }
+                    <div class="mt-2 pt-1 border-top extra-small text-muted">
+                      Jurisdiction: {{ order.tax?.jurisdictions }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td data-label="Total" class="fw-bold text-dark">
+                {{ (order.subtotal + (order.tax?.tax_amount || 0)) | currency: 'USD' : 'symbol' : '1.2-2' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="pagination-container p-3 border-top">
+        <div class="pagination-bar d-flex justify-content-center align-items-center">
+          <button class="arrow-btn btn btn-sm btn-light" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+            <i class="bi bi-caret-left-fill"></i>
+          </button>
+
+          <div class="page-numbers mx-3">
+            @for (page of visiblePages; track page) {
+              <button
+                class="page-btn btn btn-sm mx-1"
+                [class.btn-primary]="page === currentPage"
+                [class.btn-light]="page !== currentPage"
+                (click)="goToPage(page)"
+              >
+                {{ page }}
+              </button>
+            }
+            @if (totalPages > 5 && currentPage < totalPages - 2) {
+              <span class="dots mx-1">...</span>
+            }
+          </div>
+
+          <button class="arrow-btn btn btn-sm btn-light" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+            <i class="bi bi-caret-right-fill"></i>
+          </button>
+        </div>
+      </div>
     </div>
   } @else {
-    <div class="orders-container bg-white rounded shadow-sm overflow-hidden">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-          <thead>
-            <tr>
-              <th class="ps-4">ID</th>
-              <th>longitude</th>
-              <th>latitude</th>
-              <th>timestamp</th>
-              <th>subtotal</th>
-              <th>tax</th>
-              <th>total</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (order of orders; track order.id) {
-              <tr [class.table-success-custom]="order.isValid">
-                <td class="ps-4">{{ order.id }}</td>
-                <td>{{ order.longitude }}</td>
-                <td>{{ order.latitude }}</td>
-                <td>{{ order.timestamp }}</td>
-                <td>{{ order.subtotal }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <div class="d-flex justify-content-end align-items-center py-3 px-4 border-top bg-light">
-        <nav>
-          <ul class="pagination pagination-sm mb-0">
-            <li class="page-item">
-              <a class="page-link border-0 bg-transparent text-dark" href="#"
-                ><i class="bi bi-caret-left-fill"></i
-              ></a>
-            </li>
-            <li class="page-item active">
-              <a class="page-link border-0 mx-1 rounded" href="#">1</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link border-0 mx-1 bg-transparent text-dark" href="#">2</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link border-0 mx-1 bg-transparent text-dark" href="#">3</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link border-0 mx-1 bg-transparent text-dark" href="#">4</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link border-0 mx-1 bg-transparent text-dark" href="#">5</a>
-            </li>
-            <li class="page-item">
-              <span class="page-link border-0 bg-transparent text-dark">...</span>
-            </li>
-            <li class="page-item">
-              <a class="page-link border-0 bg-transparent text-dark" href="#"
-                ><i class="bi bi-caret-right-fill"></i
-              ></a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+    <div class="empty-state text-center py-5">
+      <i class="bi bi-cloud-download display-1 text-light"></i>
+      <p class="fs-4 text-muted mt-3">No orders found. Please, import a CSV file.</p>
     </div>
   }
 </div>
