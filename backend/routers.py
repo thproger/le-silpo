@@ -46,6 +46,6 @@ def create_order(order: OrderInput, session: any = Depends(get_session)):
     tax = tax_service.calculate_tax(order)
     return services.service.create_order(order, tax, session)
 
-@router.get('/orders')
+@router.get('/orders', response_model=list[OrderSchema])
 async def get_orders(session: Session = Depends(get_session)):
     return services.service.get_all_orders(session)

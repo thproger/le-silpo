@@ -1,5 +1,6 @@
-from models import Order
+from models import Order, Tax
 from sqlmodel import Session, select
+from sqlalchemy.orm import joinedload
 
 def create_order(session: Session, order: Order) -> Order:
     session.add(order)
@@ -14,4 +15,4 @@ def create_orders(session: Session, orders: list[Order]) -> list[Order]:
     return orders
 
 def get_all_orders(session: Session) -> list[Order]:
-    return session.exec(select(Order)).all()
+    return session.execute(select(Order).join(Tax).options(joinedload(Order.tax))).scalars().all()
