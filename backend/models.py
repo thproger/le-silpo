@@ -1,5 +1,4 @@
 from pydantic import BaseModel, ConfigDict, computed_field
-from typing import Optional
 from datetime import datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import func, ForeignKey, String
@@ -96,3 +95,9 @@ class OrderSchema(BaseModel):
     timestamp: datetime
     subtotal: float
     tax: TaxSchema
+
+class OrderPaginationResponse(BaseModel):
+    total: int
+    limit: int
+    offset: int
+    data: list[OrderSchema]
