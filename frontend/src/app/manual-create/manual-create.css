@@ -1,6 +1,28 @@
-manual-wrapper {
-  min-height: 100vh;
-  overflow-x: auto;
+.manual-wrapper .table thead {
+  background-color: #1a202c;
+}
+
+.manual-wrapper .form-control:focus {
+  box-shadow: none;
+  background-color: #f1f5f9;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.table-danger {
+  background-color: #fff5f5 !important;
+}
+
+.table-danger input {
+  color: #c53030;
 }
 
 .table td {

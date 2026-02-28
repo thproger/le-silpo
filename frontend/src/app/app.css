@@ -148,12 +148,6 @@
   .mobile-user-avatar {
     display: block;
   }
-  .user-avatar-circle {
-    width: 32px;
-    height: 32px;
-    background-color: #a0aec0;
-    border-radius: 50%;
-  }
 
   .nav {
     flex-direction: row !important;

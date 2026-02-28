@@ -12,3 +12,7 @@ body {
   border-radius: 8px;
   overflow: hidden;
 }
+
+table td {
+  overflow: visible !important;
+}

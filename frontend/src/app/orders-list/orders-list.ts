@@ -3,6 +3,12 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
+interface FilterState {
+  tax: 'min' | 'max';
+  timestamp: 'newest' | 'oldest';
+  amount: 'min' | 'max';
+}
+
 @Component({
   selector: 'app-orders-list',
   standalone: true,
@@ -15,86 +21,62 @@ export class OrdersList implements OnInit {
   currentPage = 1;
   pageSize = 10;
   totalItems = 0;
-  showFilterRow = false;
 
-  columnFilters = {
-    longitude: '',
-    latitude: '',
-    subtotal: '',
-    tax: ''
+  filters: FilterState = {
+    tax: 'max',
+    timestamp: 'newest',
+    amount: 'max'
   };
 
-  constructor(
-    private http: HttpClient,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
-  get totalPages() {
-    return Math.ceil(this.totalItems / this.pageSize) || 1;
+  ngOnInit(): void {
+    this.loadOrders();
   }
 
   loadOrders(): void {
     const offset = (this.currentPage - 1) * this.pageSize;
 
-    let params = new HttpParams()
+    const params = new HttpParams()
       .set('limit', this.pageSize.toString())
-      .set('offset', offset.toString());
+      .set('offset', offset.toString())
+      .set('timestamp', this.filters.timestamp)
+      .set('total', this.filters.amount === 'min' ? 'asc' : 'desc')
+      .set('tax', this.filters.tax === 'min' ? 'asc' : 'desc');
 
-    if (this.columnFilters.longitude) params = params.set('longitude', this.columnFilters.longitude);
-    if (this.columnFilters.latitude) params = params.set('latitude', this.columnFilters.latitude);
-    if (this.columnFilters.subtotal) params = params.set('subtotal', this.columnFilters.subtotal);
-
-    this.http
-      .get<any>(`https://le-silpo-production.up.railway.app/orders`, {
-        params,
-      })
+    this.http.get<any>(`https://le-silpo-production.up.railway.app/orders`, { params })
       .subscribe({
-        next: (response) => {
-          this.pagedOrders = response.data;
-          this.totalItems = response.total;
+        next: (res) => {
+          this.pagedOrders = res.data || [];
+          this.totalItems = res.total || 0;
           this.cdr.detectChanges();
-        },
-        error: (err) => console.error('Помилка завантаження:', err),
+        }
       });
   }
 
-  goToPage(page: number): void {
-    this.currentPage = page;
-    this.loadOrders();
-  }
+  setFilter(category: keyof FilterState, value: string) {
+    (this.filters as any)[category] = value;
 
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.loadOrders();
-    }
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.loadOrders();
-    }
-  }
-
-  applyFilters() {
     this.currentPage = 1;
     this.loadOrders();
   }
 
-  toggleFilters() {
-    this.showFilterRow = !this.showFilterRow;
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadOrders();
+    }
+  }
+
+  get totalPages() {
+    return Math.ceil(this.totalItems / this.pageSize) || 1;
   }
 
   get visiblePages(): number[] {
     const pages = [];
-    const start = Math.max(1, this.currentPage - 2);
-    const end = Math.min(this.totalPages, start + 4);
+    let start = Math.max(1, this.currentPage - 2);
+    let end = Math.min(this.totalPages, start + 4);
     for (let i = start; i <= end; i++) pages.push(i);
     return pages;
-  }
-
-  ngOnInit(): void {
-    this.loadOrders();
   }
 }
