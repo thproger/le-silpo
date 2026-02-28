@@ -1,7 +1,9 @@
 # Le Silpo
 
 Посилання на [фронтенд](https://le-silpo-frontend.vercel.app)
+
 Посилання на [бекенд](https://le-silpo-production.up.railway.app)
+
 [Ендпоінти](https://le-silpo-production.up.railway.app/docs) бекенду
 
 # Як відбувається розрахунок податків
@@ -18,7 +20,7 @@
 - City Rate (Місто): Додаткова ставка, якщо адреса знаходиться в межах міста з власною податковою юрисдикцією (наприклад, Нью-Йорк Сіті має власну ставку, що замінює або доповнює окружну).
 - Special District Rate (MCTD): Спеціальний податок у розмірі 0.375%, що додається в округах, які входять до зони транспортного управління столиці (Metropolitan Commuter Transportation District).
 
-Використовується бібліотека geopandas для роботи з geojson, що взяті з офіційного сайту штату New-York.
+Використовується бібліотека geopandas для роботи з geojson файлами, що взяті з офіційного сайту штату New-York.
 - [Cities_Towns.geojson](https://data.gis.ny.gov/datasets/cities-towns/explore?location=42.746233%2C-75.715375%2C6)
 - [NYS_SWIS_Codes_4255777886887019575.geojson](https://data.gis.ny.gov/datasets/nys-swis-codes/explore)
 - [Список штатів](https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json)
