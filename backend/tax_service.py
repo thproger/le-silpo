@@ -5,12 +5,12 @@ import geopandas as gpd
 import pandas as pd
 from tax import ny_tax_rates
 
-def calculate_tax(order: OrderInput, order_id) -> Tax:
+def calculate_tax(order: OrderInput) -> Tax:
     city, county = find(Point(order.longitude, order.latitude))
     tax = get_tax_info(city, county)
     return Tax(
         composite_tax_rate=tax['total_rate'],
-        tax_amount=order.subtotal+order.subtotal*tax['total_rate'],
+        tax_amount=order.subtotal*tax['total_rate'],
         city_rate=tax['city_rate'],
         jurisdictions=tax['code'],
         state_rate=0.04,
