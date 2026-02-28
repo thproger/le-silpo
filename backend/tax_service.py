@@ -7,16 +7,7 @@ from tax import ny_tax_rates
 
 def calculate_tax(order: OrderInput) -> Tax:
     city, county = find(Point(order.longitude, order.latitude))
-    tax = get_tax_info(city, county)
-    return Tax(
-        composite_tax_rate=tax['total_rate'],
-        tax_amount=order.subtotal*tax['total_rate'],
-        city_rate=tax['city_rate'],
-        jurisdictions=tax['code'],
-        state_rate=0.04,
-        county_rate=tax['county_rate'],
-        special_rate=tax['special_rate']
-    )
+    return get_tax_info(city, county)
 
 def find(point: Point):
     point_gdf = gpd.GeoDataFrame(
@@ -121,7 +112,8 @@ def get_tax_info(city, county, subtotal):
             state_rate=0.0,
             county_rate=0.0,
             city_rate=0.0,
-            special_rate=0.0
+            special_rate=0.0,
+            total_amount=round(subtotal*total_rate*0.01, 2) + subtotal
         )
 
     city_clean = str(city).strip().lower() if city else ""
@@ -129,12 +121,12 @@ def get_tax_info(city, county, subtotal):
 
     # 2. Обробка інших штатів та Edge Cases
     other_states_rates = {
-        "new jersey": {"total": 0.06625, "code": "NJ"},
-        "connecticut": {"total": 0.0635, "code": "CT"},
-        "vermont": {"total": 0.06, "code": "VT"},
-        "pennsylvania": {"total": 0.06, "code": "PA"},
-        "massachusetts": {"total": 0.0625, "code": "MA"},
-        "new york": {"total": 0.08, "code": "NY_ED"} 
+        "new jersey": {"total": 6.625, "code": "NJ"},
+        "connecticut": {"total": 6.35, "code": "CT"},
+        "vermont": {"total": 6, "code": "VT"},
+        "pennsylvania": {"total": 6, "code": "PA"},
+        "massachusetts": {"total": 625, "code": "MA"},
+        "new york": {"total": 8, "code": "NY_ED"} 
     }
 
     if county_clean in other_states_rates:
@@ -145,10 +137,11 @@ def get_tax_info(city, county, subtotal):
             composite_tax_rate=total_rate,
             tax_amount=round(subtotal * total_rate, 2),
             jurisdictions=rate_data["code"],
-            state_rate=0.0, # або розбити, якщо потрібно
+            state_rate=0.04, # або розбити, якщо потрібно
             county_rate=total_rate,
             city_rate=0.0,
-            special_rate=0.0
+            special_rate=0.0,
+            total_amount=round(subtotal*total_rate, 2) + subtotal
         )
 
     # 3. Логіка для Нью-Йорка
@@ -175,17 +168,18 @@ def get_tax_info(city, county, subtotal):
             break
 
     # Базова ставка штату NY
-    res["state_rate"] = 0.04 if (res["county_rate"] > 0 or res["city_rate"] > 0) else 0.0
+    res["state_rate"] = 4 if (res["county_rate"] > 0 or res["city_rate"] > 0) else 0.0
 
     # 4. Створення фінального об'єкта Tax
     total_rate = res["state_rate"] + res["county_rate"] + res["city_rate"] + res["special_rate"]
     
     return Tax(
         composite_tax_rate=total_rate,
-        tax_amount=round(subtotal * total_rate, 2),
+        tax_amount=round(subtotal * total_rate*0.01, 2),
         jurisdictions=res["code"][:5] if res["code"] else None, # Обрізаємо до String(5)
         state_rate=res["state_rate"],
         county_rate=res["county_rate"],
         city_rate=res["city_rate"],
-        special_rate=res["special_rate"]
+        special_rate=res["special_rate"],
+        total_amount=round(subtotal * total_rate*0.01, 2)+subtotal
     )

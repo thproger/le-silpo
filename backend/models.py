@@ -30,6 +30,7 @@ class Tax(Base):
     order_id: Mapped[int] = mapped_column(ForeignKey('orders.id'), unique=True, nullable=False)
     composite_tax_rate: Mapped[float]
     tax_amount: Mapped[float]
+    total_amount: Mapped[float]
     jurisdictions: Mapped[str] = mapped_column(String(5), nullable=True)
     
     state_rate: Mapped[float]
