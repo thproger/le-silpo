@@ -3,6 +3,8 @@ from typing import Optional
 from datetime import datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import func, ForeignKey, String
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 
 class Base(DeclarativeBase):
     pass
@@ -26,7 +28,7 @@ class OrderInput(BaseModel):
 class Tax(Base):
     __tablename__ = 'taxes'
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    order_id: Mapped[int] = mapped_column(ForeignKey('orders.id'), unique=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey('orders.id'), unique=True, nullable=False)
     composite_tax_rate: Mapped[float]
     tax_amount: Mapped[float]
     jurisdictions: Mapped[str] = mapped_column(String(5), nullable=True)
@@ -38,8 +40,7 @@ class Tax(Base):
 
     order: Mapped['Order'] = relationship(back_populates='tax')
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Order(Base):
@@ -54,7 +55,7 @@ class Order(Base):
     @computed_field
     @property
     def total_amount(self) -> float:
-        if self.tax_details:
+        if self.tax:
             return self.subtotal + self.tax.tax_amount
         return self.subtotal
     class Config:
