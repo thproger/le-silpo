@@ -38,9 +38,14 @@ export class OrdersList implements OnInit {
       .set('limit', this.pageSize.toString())
       .set('offset', offset.toString())
       .set('sort_by', this.currentSort.column)
-      .set('order', this.currentSort.direction === 'newest' ? 'desc' :
-        this.currentSort.direction === 'oldest' ? 'asc' :
-          this.currentSort.direction);
+      .set(
+        'order',
+        this.currentSort.direction === 'newest'
+          ? 'desc'
+          : this.currentSort.direction === 'oldest'
+            ? 'asc'
+            : this.currentSort.direction,
+      );
 
     this.http.get<any>(`https://le-silpo-production.up.railway.app/orders`, { params }).subscribe({
       next: (response) => {
