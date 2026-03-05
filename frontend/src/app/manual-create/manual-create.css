@@ -1,3 +1,90 @@
+.manual-wrapper .table thead {
+  background-color: #1a202c;
+}
+
+.manual-wrapper .form-control:focus {
+  box-shadow: none;
+  background-color: #f1f5f9;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.table-danger {
+  background-color: #fff5f5 !important;
+}
+
+.table-danger input {
+  color: #c53030;
+}
+
+.table td {
+  padding: 0;
+  vertical-align: middle;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  background-color: #f8f9fa;
+}
+
+td:first-child {
+  color: #6c757d;
+  user-select: none;
+}
+
+.map-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.map-modal-content {
+  background: white;
+  width: 90%;
+  max-width: 850px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.map-modal-header {
+  padding: 15px 20px;
+  background: #1a202c;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#map-container {
+  height: 500px;
+  width: 100%;
+  cursor: crosshair;
+}
+
+.btn-close {
+  filter: invert(1);
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   .manual-table {
     display: block;
