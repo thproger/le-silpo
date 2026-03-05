@@ -22,12 +22,6 @@ export class OrdersList implements OnInit {
     private cdr: ChangeDetectorRef,
   ) {}
 
-  filters = {
-    timestamp: 'newest',
-    total: 'desc',
-    tax: 'desc',
-  };
-
   currentSort = {
     column: 'timestamp',
     direction: 'newest',
@@ -43,15 +37,18 @@ export class OrdersList implements OnInit {
     let params = new HttpParams()
       .set('limit', this.pageSize.toString())
       .set('offset', offset.toString())
-      .set(this.currentSort.column, this.currentSort.direction);
+      .set('sort_by', this.currentSort.column)
+      .set('order', this.currentSort.direction === 'newest' ? 'desc' :
+        this.currentSort.direction === 'oldest' ? 'asc' :
+          this.currentSort.direction);
 
     this.http.get<any>(`https://le-silpo-production.up.railway.app/orders`, { params }).subscribe({
       next: (response) => {
-        this.pagedOrders = response.data;
-        this.totalItems = response.meta.total;
+        this.pagedOrders = [...response.data];
+        this.totalItems = response.total;
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Помилка завантаження:', err),
+      error: (err) => console.error('Error:', err),
     });
   }
 
