@@ -1,7 +1,38 @@
 <div class="orders-wrapper p-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold m-0 text-dark">Orders list</h2>
+
+    <button class="btn btn-outline-secondary btn-sm" (click)="toggleFilters()">
+      <i class="bi bi-filter"></i> {{ showFilterRow ? 'Hide' : 'Показати' }} фільтри
+    </button>
   </div>
+
+  @if (showFilterRow) {
+    <div class="filters-panel bg-light p-3 rounded mb-4 shadow-sm">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-6">
+          <label class="form-label small fw-bold">Sorted by:</label>
+          <select
+            class="form-select form-select-sm"
+            #sortSelect
+            (change)="updateSort(sortSelect.value.split(':')[0], sortSelect.value.split(':')[1])"
+          >
+            <option value="timestamp:newest">timestamp (newest)</option>
+            <option value="timestamp:oldest">timestamp (oldest)</option>
+            <option value="total:desc">total (desc)</option>
+            <option value="total:asc">total (asc)</option>
+            <option value="tax:desc">tax (desc)</option>
+            <option value="tax:asc">tax (asc)</option>
+          </select>
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <span class="text-muted small">
+            Active filter: <strong>{{ currentSort.column }}</strong> ({{ currentSort.direction }})
+          </span>
+        </div>
+      </div>
+    </div>
+  }
 
   @if (pagedOrders && pagedOrders.length > 0) {
     <div class="table-container shadow-sm rounded bg-white table-responsive-custom">
