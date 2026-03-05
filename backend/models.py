@@ -50,7 +50,7 @@ class Order(Base):
     longitude: Mapped[float]
     timestamp: Mapped[datetime] = mapped_column(server_default=func.now())
     subtotal: Mapped[float]
-    tax: Mapped['Tax'] = relationship(back_populates='order', uselist=False, cascade='all, delete-orphan')
+    tax: Mapped['Tax'] = relationship(back_populates='order', uselist=False, cascade='all, delete-orphan', lazy='joined')
 
     @computed_field
     @property

@@ -7,7 +7,7 @@ from tax import ny_tax_rates
 
 def calculate_tax(order: OrderInput) -> Tax:
     city, county = find(Point(order.longitude, order.latitude))
-    return get_tax_info(city, county)
+    return get_tax_info(city, county, order.subtotal)
 
 def find(point: Point):
     point_gdf = gpd.GeoDataFrame(
@@ -95,6 +95,7 @@ def find_batch(df: pd.DataFrame):
     return result_df
 
 def get_tax_info(city, county, subtotal):
+    total_rate = 4
     # 1. Початкові значення
     res = {
         "state_rate": 0.0,
