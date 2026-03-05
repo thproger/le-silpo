@@ -11,12 +11,6 @@ def create_order(order_input: OrderInput, tax: Tax, sesion: Session) -> Order:
 def create_orders(orders: list[Order], session: Session):
     repository.create_orders(session, orders)
 
-def get_orders(
-    session: Session,
-    limit: int,
-    offset: int,
-    timestamp: str,
-    tax: str,
-    total: str
-) -> list[Order]:
-    return repository.get_all_orders(session, limit, offset, timestamp=timestamp, tax=tax, total=total)
+def get_orders(session: Session, limit: int, offset: int, sort_by: str, order: str):
+    orders, count =  repository.get_orders(session, limit, offset, sort_by, order)
+    return orders, count

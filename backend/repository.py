@@ -15,43 +15,32 @@ def create_orders(session: Session, orders: list[Order], batch_size = 1000):
         session.commit()
         session.expire_all()     # дозволяє працювати joinedload після вставки
 
-def get_all_orders(
-    session: Session,
-    limit: int,
-    offset: int,
-    timestamp: str,
-    tax: str,
-    total: str
-) -> list[Order]:
-    count_statement = select(func.count()).select_from(Order)
-    count = session.exec(count_statement).one()
-    # 1. Базовий запит з outer join, щоб підвантажити .tax
+from sqlalchemy import asc, desc, select, func
+from sqlalchemy.orm import contains_eager
+
+def get_orders(session: Session, limit: int, offset: int, sort_by: str, order: str):
+    # 1. Рахуємо загальну кількість
+    count_stmt = select(func.count()).select_from(Order)
+    total_count = session.exec(count_stmt).scalar()
+
+    # 2. Базовий запит із завантаженням зв'язку
     stmt = select(Order).outerjoin(Order.tax).options(contains_eager(Order.tax))
 
-    # 2. Сортування
-    order_clauses = []
+    # 3. Визначаємо напрямок (функцію asc або desc)
+    direction = asc if order == "asc" else desc
 
-    # timestamp сортування
-    if timestamp == "newest":
-        order_clauses.append(desc(Order.timestamp))
-    else:  # oldest
-        order_clauses.append(asc(Order.timestamp))
+    # 4. Фільтруємо сортування: вибираємо ТІЛЬКИ ОДНЕ поле
+    if sort_by == "timestamp":
+        stmt = stmt.order_by(direction(Order.timestamp))
+    elif sort_by == "total":
+        stmt = stmt.order_by(direction(Order.subtotal))
+    elif sort_by == "tax":
+        # Сортуємо по полю з приєднаної таблиці Tax
+        stmt = stmt.order_by(direction(Tax.tax_amount))
 
-    # subtotal
-    if total == "asc":
-        order_clauses.append(asc(Order.subtotal))
-    else:
-        order_clauses.append(desc(Order.subtotal))
-
-    # tax_amount (якщо tax не None)
-    if tax == "asc":
-        order_clauses.append(asc(Tax.tax_amount))
-    else:
-        order_clauses.append(desc(Tax.tax_amount))
-
-    stmt = stmt.order_by(*order_clauses).offset(offset).limit(limit)
-
-    # 3. Виконання
-    orders = session.exec(stmt).all()  # тут .tax автоматично заповниться завдяки contains_eager
-
-    return orders, count
+    # 5. Пагінація
+    stmt = stmt.offset(offset).limit(limit)
+    
+    orders = session.exec(stmt).scalars().all()
+    
+    return orders, total_count

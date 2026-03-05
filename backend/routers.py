@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Query, UploadFile, Depends
+from typing import Literal
 import tax_service as tax_service
 import io
 from sqlmodel import Session
-from models import OrderInput, Order
+from models import OrderInput, Order, OrderPaginationResponse
 import pandas as pd
 import main
 import service
@@ -89,32 +90,26 @@ async def create_order(order: OrderInput, session: any = Depends(get_session)):
     tax = tax_service.calculate_tax(order)
     return service.create_order(order, tax, session)
 
-@router.get('/orders')
+
+@router.get('/orders', response_model=OrderPaginationResponse)
 async def get_orders(
-    limit: int = Query(10, ge=1, le=100), # за замовчуванням 10, макс 100
+    limit: int = Query(10, ge=1, le=100),
     offset: int = Query(0, ge=0),
-    timestamp: str = Query("newest", enum=["newest", "oldest"]),
-    total: str = Query('desc', enum=['asc', 'desc']),
-    tax: str = Query("desc", enum=["asc", "desc"]),
+    sort_by: Literal["timestamp", "total", "tax"] = Query("timestamp"),
+    order: Literal["asc", "desc"] = Query("desc"),
     session: Session = Depends(get_session)
 ):
-    orders, total = service.get_orders(
+    orders, total_count = service.get_orders(
         session=session,
         limit=limit,
         offset=offset,
-        timestamp=timestamp,
-        total=total,
-        tax=tax,
+        sort_by=sort_by,
+        order=order
     )
-    
-    return {
-        "data": orders,
-        "meta": {
-            "total": total,
-            "limit": limit,
-            "offset": offset,
-            "total": total,
-            "tax": tax,
-            'timestamp': timestamp
-        }
-    }
+
+    return OrderPaginationResponse(
+        data=orders,
+        total=total_count,
+        limit=limit,
+        offset=offset
+    )

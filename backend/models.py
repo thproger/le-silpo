@@ -96,6 +96,7 @@ class OrderSchema(BaseModel):
     timestamp: datetime
     subtotal: float
     tax: TaxSchema
+    model_config = ConfigDict(from_attributes=True)
 
 class OrderPaginationResponse(BaseModel):
     total: int
