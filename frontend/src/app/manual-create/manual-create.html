@@ -51,7 +51,11 @@
               </td>
 
               <td class="text-center">
-                <button (click)="submitRow(i)" class="btn btn-success btn-sm" [disabled]="rows.at(i).invalid">
+                <button
+                  (click)="submitRow(i)"
+                  class="btn btn-success btn-sm"
+                  [disabled]="row.invalid"
+                >
                   <i class="bi bi-cloud-arrow-up"></i>
                 </button>
               </td>
