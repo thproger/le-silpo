@@ -107,7 +107,6 @@ export class ManualCreate {
   submitRow(index: number) {
     const rowValue = this.rows.at(index).value;
 
-    // Додаємо перевірку на NaN
     const payload = {
       latitude: parseFloat(rowValue.latitude) || 0,
       longitude: parseFloat(rowValue.longitude) || 0,

@@ -22,6 +22,17 @@ export class OrdersList implements OnInit {
     private cdr: ChangeDetectorRef,
   ) {}
 
+  filters = {
+    timestamp: 'newest',
+    total: 'desc',
+    tax: 'desc',
+  };
+
+  currentSort = {
+    column: 'timestamp',
+    direction: 'newest',
+  };
+
   get totalPages() {
     return Math.ceil(this.totalItems / this.pageSize) || 1;
   }
@@ -31,20 +42,17 @@ export class OrdersList implements OnInit {
 
     let params = new HttpParams()
       .set('limit', this.pageSize.toString())
-      .set('offset', offset.toString());
+      .set('offset', offset.toString())
+      .set(this.currentSort.column, this.currentSort.direction);
 
-    this.http
-      .get<any>(`https://le-silpo-production.up.railway.app/orders`, {
-        params,
-      })
-      .subscribe({
-        next: (response) => {
-          this.pagedOrders = response.data;
-          this.totalItems = response.meta.total/10;
-          this.cdr.detectChanges();
-        },
-        error: (err) => console.error('Помилка завантаження:', err),
-      });
+    this.http.get<any>(`https://le-silpo-production.up.railway.app/orders`, { params }).subscribe({
+      next: (response) => {
+        this.pagedOrders = response.data;
+        this.totalItems = response.meta.total;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Помилка завантаження:', err),
+    });
   }
 
   goToPage(page: number): void {
@@ -59,6 +67,11 @@ export class OrdersList implements OnInit {
 
   toggleFilters() {
     this.showFilterRow = !this.showFilterRow;
+  }
+
+  updateSort(column: string, direction: string) {
+    this.currentSort = { column, direction };
+    this.applyFilters();
   }
 
   get visiblePages(): number[] {
