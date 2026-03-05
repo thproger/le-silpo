@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -107,12 +107,15 @@ export class ManualCreate {
   submitRow(index: number) {
     const rowValue = this.rows.at(index).value;
 
+    // Додаємо перевірку на NaN
     const payload = {
-      latitude: parseFloat(rowValue.latitude),
-      longitude: parseFloat(rowValue.longitude),
-      subtotal: parseFloat(rowValue.subtotal),
-      timestamp: rowValue.timestamp || new Date().toISOString().slice(0, 19).replace('T', ' ')
+      latitude: parseFloat(rowValue.latitude) || 0,
+      longitude: parseFloat(rowValue.longitude) || 0,
+      subtotal: parseFloat(rowValue.subtotal) || 0,
+      timestamp: rowValue.timestamp || new Date().toISOString(),
     };
+
+    console.log('Відправляємо дані:', payload);
 
     this.http.post('https://le-silpo-production.up.railway.app/orders', payload).subscribe({
       next: (response) => {
@@ -122,7 +125,7 @@ export class ManualCreate {
       error: (error) => {
         console.error('Помилка при збереженні:', error);
         alert('Сервер повернув помилку. Перевір консоль.');
-      }
+      },
     });
   }
 }

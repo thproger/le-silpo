@@ -40,7 +40,7 @@ export class OrdersList implements OnInit {
       .subscribe({
         next: (response) => {
           this.pagedOrders = response.data;
-          this.totalItems = response.total;
+          this.totalItems = response.meta.total/10;
           this.cdr.detectChanges();
         },
         error: (err) => console.error('Помилка завантаження:', err),
@@ -50,20 +50,6 @@ export class OrdersList implements OnInit {
   goToPage(page: number): void {
     this.currentPage = page;
     this.loadOrders();
-  }
-
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.loadOrders();
-    }
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.loadOrders();
-    }
   }
 
   applyFilters() {
