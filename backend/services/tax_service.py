@@ -43,12 +43,10 @@ def get_tax_info(city_name, county_name):
     city_clean = str(city_name).strip().lower()
     county_clean = str(county_name).strip().lower()
 
-    # Обробка Нью-Йорка
     nyc_boroughs = ["bronx", "kings", "new york", "queens", "richmond"]
     if county_clean in nyc_boroughs:
         city_clean = "new york city"
 
-    # Ініціалізація результатів
     tax_info = {
         "county_rate": 0.0,
         "city_rate": 0.0,
@@ -56,14 +54,12 @@ def get_tax_info(city_name, county_name):
         "code": None
     }
 
-    # 1. Пошук податку округу
     for entry in ny_tax_rates:
         if not entry.get("is_city") and county_clean == entry["clean_name"].lower():
             tax_info["county_rate"] = entry.get("rate", 0.0)
-            tax_info["code"] = entry.get("code")  # Зазвичай код прив'язаний до округу/міста
+            tax_info["code"] = entry.get("code")
             break
 
-    # 2. Пошук податку міста (якщо він є окремо)
     for entry in ny_tax_rates:
         if entry.get("is_city") and city_clean == entry["clean_name"].lower():
             tax_info["city_rate"] = entry.get("rate", 0.0)
@@ -72,14 +68,11 @@ def get_tax_info(city_name, county_name):
                 tax_info["code"] = entry["code"]
             break
 
-    # 3. Пошук спеціального податку (наприклад, MCTD - Metropolitan Commuter Transportation District)
-    # Припускаємо, що у вашому списку є записи з типом "special" або за певною назвою
     for entry in ny_tax_rates:
         if entry.get("type") == "special" and county_clean in entry.get("applicable_counties", []):
             tax_info["special_rate"] = entry.get("rate", 0.0)
             break
 
-    # Розрахунок загальної ставки
     tax_info["total_rate"] = tax_info["county_rate"] + tax_info["city_rate"] + tax_info["special_rate"]
 
     return tax_info

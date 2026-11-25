@@ -37,23 +37,23 @@ export class OrdersList implements OnInit {
     return Math.ceil(this.totalItems / this.pageSize) || 1;
   }
 
-  loadOrders(): void {
-    const offset = (this.currentPage - 1) * this.pageSize;
+    loadOrders(): void {
+      const offset = (this.currentPage - 1) * this.pageSize;
 
-    let params = new HttpParams()
-      .set('limit', this.pageSize.toString())
-      .set('offset', offset.toString())
-      .set(this.currentSort.column, this.currentSort.direction);
+      let params = new HttpParams()
+        .set('limit', this.pageSize.toString())
+        .set('offset', offset.toString())
+        .set(this.currentSort.column, this.currentSort.direction);
 
-    this.http.get<any>(`https://le-silpo-production.up.railway.app/orders`, { params }).subscribe({
-      next: (response) => {
-        this.pagedOrders = response.data;
-        this.totalItems = response.meta.total;
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Помилка завантаження:', err),
-    });
-  }
+      this.http.get<any>(`https://le-silpo-production.up.railway.app/orders`, { params }).subscribe({
+        next: (response) => {
+          this.pagedOrders = response.data;
+          this.totalItems = response.total;
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Помилка завантаження:', err),
+      });
+    }
 
   goToPage(page: number): void {
     this.currentPage = page;

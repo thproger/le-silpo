@@ -29,7 +29,4 @@ class OrderRead(BaseModel):
     longitude: float
     subtotal: float
     tax: float
-    # timestamp: datetime | None # додайте, якщо використовуєте дату
-
-    # Це дозволяє Pydantic читати дані з об'єктів SQLAlchemy (наприклад, з вашого класу Order)
     model_config = ConfigDict(from_attributes=True)

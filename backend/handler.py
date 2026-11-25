@@ -29,20 +29,16 @@ async def create_order(file: UploadFile):
     orders: list[OrderInput] = []
     errors = []
 
-    # 4. Проходимося по кожному рядку і створюємо об'єкти
     for row_number, row in enumerate(csv_reader, start=1):
         try:
-            # Розпаковуємо словник (рядок з CSV) прямо в Pydantic модель
             order = OrderInput(**row)
             orders.append(order)
         except ValidationError as e:
-            # Якщо дані невалідні (наприклад, замість числа текст), записуємо помилку
             errors.append({
                 "row": row_number,
                 "errors": e.errors()
             })
 
-    # 5. Якщо були помилки валідації, повертаємо їх клієнту
     if errors:
         raise HTTPException(status_code=422, detail={"message": "Помилки у даних CSV", "errors": errors})
 
