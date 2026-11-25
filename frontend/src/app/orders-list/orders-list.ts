@@ -22,12 +22,6 @@ export class OrdersList implements OnInit {
     private cdr: ChangeDetectorRef,
   ) {}
 
-  filters = {
-    timestamp: 'newest',
-    total: 'desc',
-    tax: 'desc',
-  };
-
   currentSort = {
     column: 'timestamp',
     direction: 'newest',
@@ -40,6 +34,7 @@ export class OrdersList implements OnInit {
     loadOrders(): void {
       const offset = (this.currentPage - 1) * this.pageSize;
 
+<<<<<<< HEAD
       let params = new HttpParams()
         .set('limit', this.pageSize.toString())
         .set('offset', offset.toString())
@@ -54,6 +49,30 @@ export class OrdersList implements OnInit {
         error: (err) => console.error('Помилка завантаження:', err),
       });
     }
+=======
+    let params = new HttpParams()
+      .set('limit', this.pageSize.toString())
+      .set('offset', offset.toString())
+      .set('sort_by', this.currentSort.column)
+      .set(
+        'order',
+        this.currentSort.direction === 'newest'
+          ? 'desc'
+          : this.currentSort.direction === 'oldest'
+            ? 'asc'
+            : this.currentSort.direction,
+      );
+
+    this.http.get<any>(`https://le-silpo-production.up.railway.app/orders`, { params }).subscribe({
+      next: (response) => {
+        this.pagedOrders = [...response.data];
+        this.totalItems = response.total;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error:', err),
+    });
+  }
+>>>>>>> main
 
   goToPage(page: number): void {
     this.currentPage = page;

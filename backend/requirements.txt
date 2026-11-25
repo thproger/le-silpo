@@ -1,5 +1,7 @@
 fastapi
 geopandas
 mysqlclient
+sqlmodel
 PyMySQL
 uvicorn
+python-multipart
